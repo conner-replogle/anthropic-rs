@@ -4,13 +4,13 @@ use reqwest::header::{HeaderMap, ACCEPT, CONTENT_TYPE};
 use reqwest_eventsource::{Event, EventSource, RequestBuilderExt};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use serde_json::Value;
+
 use tokio_stream::{Stream, StreamExt};
 
 use crate::config::AnthropicConfig;
 use crate::error::{map_deserialization_error, AnthropicError, WrappedError};
 use crate::types::{
-    CompleteRequest, CompleteResponse, CompleteResponseStream, MessageResponse, MessagesRequest, MessagesResponse,
+    CompleteRequest, CompleteResponse, CompleteResponseStream, MessagesRequest, MessagesResponse,
     Model,
 };
 use crate::{
@@ -286,7 +286,7 @@ impl TryFrom<AnthropicConfig> for Client {
         Ok(Self {
             api_key: value.api_key,
             api_base: value.api_base.unwrap_or_else(|| DEFAULT_API_BASE.to_string()),
-            default_model: value.default_model.unwrap_or_else(|| DEFAULT_MODEL),
+            default_model: value.default_model.unwrap_or(DEFAULT_MODEL),
             http_client: reqwest::Client::new(),
             backoff: Default::default(),
         })

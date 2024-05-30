@@ -18,7 +18,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let client = Client::try_from(cfg)?;
 
     let complete_request = MessagesRequestBuilder::default()
-        .max_tokens(4096 as u32)
+        .max_tokens(4096_u32)
         .model(Model::Claude3Haiku20240307)
         .system("Ask how the user is doing?")
         .messages(vec![Message { role: Role::User, content: Content::Text("Hello AI".to_string()) }])

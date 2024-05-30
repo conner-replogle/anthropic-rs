@@ -10,6 +10,7 @@
 //! use anthropic::types::CompleteRequestBuilder;
 //! use anthropic::{AI_PROMPT, HUMAN_PROMPT};
 //! use dotenv::dotenv;
+//! use anthropic::types::Model;
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn Error>> {
@@ -21,7 +22,7 @@
 //!
 //! let complete_request = CompleteRequestBuilder::default()
 //!     .prompt(format!("{HUMAN_PROMPT}How many toes do dogs have?{AI_PROMPT}"))
-//!     .model("claude-instant-1".to_string())
+//!     .model(Model::ClaudeInstant12)
 //!     .stream(false)
 //!     .stop_sequences(vec![HUMAN_PROMPT.to_string()])
 //!     .build()?;
