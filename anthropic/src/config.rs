@@ -2,14 +2,14 @@
 use config::Config;
 use serde_derive::Deserialize;
 
-use crate::error::AnthropicError;
+use crate::{error::AnthropicError, types::Model};
 
 /// Configuration for the application.
 #[derive(Debug, Deserialize)]
 pub struct AnthropicConfig {
     pub api_key: String,
     pub api_base: Option<String>,
-    pub default_model: Option<String>,
+    pub default_model: Option<Model>,
 }
 
 impl AnthropicConfig {

@@ -4,11 +4,15 @@ use reqwest::header::{HeaderMap, ACCEPT, CONTENT_TYPE};
 use reqwest_eventsource::{Event, EventSource, RequestBuilderExt};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
+use serde_json::Value;
 use tokio_stream::{Stream, StreamExt};
 
 use crate::config::AnthropicConfig;
 use crate::error::{map_deserialization_error, AnthropicError, WrappedError};
-use crate::types::{CompleteRequest, CompleteResponse, CompleteResponseStream};
+use crate::types::{
+    CompleteRequest, CompleteResponse, CompleteResponseStream, MessageResponse, MessagesRequest, MessagesResponse,
+    Model,
+};
 use crate::{
     API_VERSION, API_VERSION_HEADER_KEY, AUTHORIZATION_HEADER_KEY, CLIENT_ID, CLIENT_ID_HEADER_KEY, DEFAULT_API_BASE,
     DEFAULT_MODEL,
@@ -23,8 +27,8 @@ pub struct Client {
     #[builder(default = "DEFAULT_API_BASE.to_string()")]
     pub api_base: String,
     /// The model to use.
-    #[builder(default = "DEFAULT_MODEL.to_string()")]
-    pub default_model: String,
+    #[builder(default = "DEFAULT_MODEL")]
+    pub default_model: Model,
     /// The HTTP client.
     /// Don't allow the user to set this through the builder.
     #[builder(setter(skip))]
@@ -47,6 +51,14 @@ impl Client {
             return Err(AnthropicError::InvalidArgument("When stream is true, use complete_stream() instead".into()));
         }
         self.post("/v1/complete", request).await
+    }
+
+    pub async fn messages(&self, request: MessagesRequest) -> Result<MessagesResponse, AnthropicError> {
+        // if request.stream {
+        //     return Err(AnthropicError::InvalidArgument("When stream is true, use complete_stream() instead".into()));
+        // }
+        println!("Value: {:?}", serde_json::to_string_pretty(&request));
+        self.post("/v1/messages", request).await
     }
 
     pub async fn complete_stream(&self, request: CompleteRequest) -> Result<CompleteResponseStream, AnthropicError> {
@@ -274,7 +286,7 @@ impl TryFrom<AnthropicConfig> for Client {
         Ok(Self {
             api_key: value.api_key,
             api_base: value.api_base.unwrap_or_else(|| DEFAULT_API_BASE.to_string()),
-            default_model: value.default_model.unwrap_or_else(|| DEFAULT_MODEL.to_string()),
+            default_model: value.default_model.unwrap_or_else(|| DEFAULT_MODEL),
             http_client: reqwest::Client::new(),
             backoff: Default::default(),
         })

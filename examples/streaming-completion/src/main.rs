@@ -3,7 +3,7 @@ use std::io::Write;
 
 use anthropic::client::Client;
 use anthropic::config::AnthropicConfig;
-use anthropic::types::{CompleteRequestBuilder, StopReason};
+use anthropic::types::{CompleteRequestBuilder, Model, StopReason};
 use anthropic::{AI_PROMPT, HUMAN_PROMPT};
 use dotenv::dotenv;
 use tokio_stream::StreamExt;
@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let complete_request = CompleteRequestBuilder::default()
         .prompt(format!("{HUMAN_PROMPT}How many toes do dogs have?{AI_PROMPT}"))
-        .model("claude-2".to_string())
+        .model(Model::Claude21)
         .max_tokens_to_sample(256usize)
         .stream(true)
         .stop_sequences(vec![HUMAN_PROMPT.to_string()])

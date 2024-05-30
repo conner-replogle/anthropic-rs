@@ -35,6 +35,7 @@
 
 use lazy_static::lazy_static;
 use rustc_version::version;
+use types::Model;
 
 #[macro_use]
 extern crate derive_builder;
@@ -55,7 +56,7 @@ pub const HUMAN_PROMPT: &str = "\n\nHuman:";
 pub const AI_PROMPT: &str = "\n\nAssistant:";
 
 /// Default model to use.
-pub const DEFAULT_MODEL: &str = "claude-v1";
+pub const DEFAULT_MODEL: Model = Model::ClaudeInstant12;
 /// Default v1 API base url.
 pub const DEFAULT_API_BASE: &str = "https://api.anthropic.com";
 /// Auth header key.

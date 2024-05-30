@@ -2,8 +2,7 @@ use std::error::Error;
 
 use anthropic::client::Client;
 use anthropic::config::AnthropicConfig;
-use anthropic::types::{CompleteRequestBuilder, Model};
-use anthropic::{AI_PROMPT, HUMAN_PROMPT};
+use anthropic::types::{Content, Message, MessagesRequestBuilder, Model, Role};
 use dotenv::dotenv;
 
 #[tokio::main]
@@ -18,16 +17,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let cfg = AnthropicConfig::new()?;
     let client = Client::try_from(cfg)?;
 
-    let complete_request = CompleteRequestBuilder::default()
-        .prompt(format!("{HUMAN_PROMPT}How many toes do dogs have?{AI_PROMPT}"))
-        .model(Model::ClaudeInstant12)
-        .max_tokens_to_sample(256usize)
-        .stream(false)
-        .stop_sequences(vec![HUMAN_PROMPT.to_string()])
+    let complete_request = MessagesRequestBuilder::default()
+        .max_tokens(4096 as u32)
+        .model(Model::Claude3Haiku20240307)
+        .system("Ask how the user is doing?")
+        .messages(vec![Message { role: Role::User, content: Content::Text("Hello AI".to_string()) }])
+        .temperature(0.5)
         .build()?;
 
     // Send a completion request.
-    let complete_response = client.complete(complete_request).await?;
+    let complete_response = client.messages(complete_request).await?;
 
     println!("completion response: {complete_response:?}");
 
