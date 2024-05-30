@@ -149,6 +149,6 @@ pub struct MessageResponse {
 }
 #[derive(Debug, Deserialize, Clone, PartialEq, Serialize)]
 pub struct Usage {
-    input_tokens: u32,
-    output_tokens: u32,
+    pub input_tokens: u32,
+    pub output_tokens: u32,
 }
